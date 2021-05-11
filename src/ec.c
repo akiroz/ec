@@ -23,9 +23,11 @@ const char *usage =
     " -o PCM            capture PCM (default)\n"
     " -r rate           sample rate (16000)\n"
     " -c channels       recording channels (2)\n"
+    " -p channels       playback channels (1)\n"
     " -b size           buffer size (262144)\n"
     " -d delay          system delay between playback and capture (0)\n"
-    " -f filter_length  AEC filter length (2048)\n"
+    " -f filter_len_ms  AEC filter length in ms (256)\n"
+    " -l frame_len_ms   frame length in ms (10)\n"
     " -s                save audio to /tmp/playback.raw, /tmp/recording.raw and /tmp/out.raw\n"
     " -D                daemonize\n"
     " -h                display this help text\n"
@@ -61,6 +63,8 @@ int main(int argc, char *argv[])
     int delay = 0;
     int save_audio = 0;
     int daemonize = 0;
+    int frame_len_ms = 10;
+    int filter_len_ms = 256;
 
     conf_t config = {
         .rec_pcm = "default",
@@ -78,7 +82,7 @@ int main(int argc, char *argv[])
         .bypass = 1
     };
 
-    while ((opt = getopt(argc, argv, "b:c:d:Df:hi:o:r:s")) != -1)
+    while ((opt = getopt(argc, argv, "b:c:p:d:Df:l:hi:o:r:s")) != -1)
     {
         switch (opt)
         {
@@ -89,6 +93,9 @@ int main(int argc, char *argv[])
             config.rec_channels = atoi(optarg);
             config.out_channels = config.rec_channels;
             break;
+        case 'p':
+            config.ref_channels = atoi(optarg);
+            break;
         case 'd':
             delay = atoi(optarg);
             break;
@@ -96,7 +103,10 @@ int main(int argc, char *argv[])
             daemonize = 1;
             break;
         case 'f':
-            config.filter_length = atoi(optarg);
+            filter_len_ms = atoi(optarg);
+            break;
+        case 'l':
+            frame_len_ms = atoi(optarg);
             break;
         case 'h':
             printf(usage, argv[0]);
@@ -161,7 +171,8 @@ int main(int argc, char *argv[])
         }
     }
 
-    int frame_size = config.rate * 10 / 1000; // 10 ms
+    int frame_size = config.rate * frame_len_ms / 1000; // ms
+    config.filter_length = config.rate * filter_len_ms / 1000;  // ms
 
     if (save_audio)
     {
@@ -227,7 +238,7 @@ int main(int argc, char *argv[])
         if (fp_far)
         {
             fwrite(rec, 2, frame_size * config.rec_channels, fp_rec);
-            fwrite(far, 2, frame_size, fp_far);
+            fwrite(far, 2, frame_size * config.ref_channels, fp_far);
             fwrite(out, 2, frame_size * config.out_channels, fp_out);
         }
 
