@@ -25,7 +25,7 @@ const char *usage =
     " -c channels       recording channels (2)\n"
     " -p channels       playback channels (1)\n"
     " -b size           buffer size (262144)\n"
-    " -d delay          system delay between playback and capture (0)\n"
+    " -d delay          system delay in ms between playback and capture (0)\n"
     " -f filter_len_ms  AEC filter length in ms (256)\n"
     " -l frame_len_ms   frame length in ms (10)\n"
     " -s                save audio to /tmp/playback.raw, /tmp/recording.raw and /tmp/out.raw\n"
@@ -219,7 +219,8 @@ int main(int argc, char *argv[])
     int timeout = 200 * 1000 * frame_size / config.rate;    // ms
 
     // system delay between recording and playback
-    printf("skip frames %d\n", capture_skip(delay));
+    int delay_frames = config.rate * delay / 1000; // ms
+    printf("skip frames %d\n", capture_skip(delay_frames));
 
     while (!g_is_quit)
     {
