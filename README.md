@@ -1,3 +1,30 @@
+About this fork
+===============
+
+I made some changes to make it more controllable.
+* Add `-p`. Can now specify number of playback channels, so we can play stereo audio.
+* Add `-l`. Can set frame length (in ms). By default it is 10 ms, but speex document recommand 20 ms.
+* Change the filter length option `-f` to ms. Original is frame count.
+* Change the delay option `-d` to ms. Original is frame count (could be a bug as in the doc says it's ms).
+
+```
+Usage:
+ ec [options]
+Options:
+ -i PCM            playback PCM (default)
+ -o PCM            capture PCM (default)
+ -r rate           sample rate (16000)
+ -c channels       recording channels (2)
+ -p channels       playback channels (1)
+ -b size           buffer size (262144)
+ -d delay          system delay in ms between playback and capture (0)
+ -f filter_len_ms  AEC filter length in ms (256)
+ -l frame_len_ms   frame length in ms (10)
+ -s                save audio to /tmp/playback.raw, /tmp/recording.raw and /tmp/out.raw
+ -D                daemonize
+ -h                display this help text
+```
+
 ec - Echo Canceller
 ===================
 
