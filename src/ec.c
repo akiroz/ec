@@ -220,7 +220,7 @@ int main(int argc, char *argv[])
 
     // system delay between recording and playback
     int delay_frames = config.rate * delay / 1000; // ms
-    printf("skip frames %d\n", capture_skip(delay_frames));
+    printf("skip frames %d\n", playback_skip(delay_frames));
 
     while (!g_is_quit)
     {

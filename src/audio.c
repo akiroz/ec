@@ -454,3 +454,13 @@ int playback_read(void *buf, size_t frames, int timeout_ms)
 
     return PaUtil_ReadRingBuffer(&g_playback_ringbuffer, buf, frames);
 }
+
+int playback_skip(size_t frames)
+{
+    while (PaUtil_GetRingBufferReadAvailable(&g_playback_ringbuffer) < frames)
+    {
+        usleep(1000);
+    }
+    return PaUtil_AdvanceRingBufferReadIndex(&g_playback_ringbuffer, frames);
+}
+
