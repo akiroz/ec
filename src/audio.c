@@ -178,7 +178,7 @@ void *playback(void *ptr)
     }
     printf("new pipe size: %ld\n", pipe_size);
 
-    int wait_us = chunk_size * 1000000 / conf->rate / 4;
+    int wait_us = chunk_size * 1000000 / conf->rate;
     while (!g_is_quit)
     {
         int count = 0;
