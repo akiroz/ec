@@ -230,10 +230,12 @@ int main(int argc, char *argv[])
         if (!config.bypass)
         {
             speex_echo_cancellation(echo_state, rec, far, out);
+            printf("speex_echo_cancellation\n");
         }
         else
         {
             memcpy(out, rec, frame_size * config.rec_channels * config.bits_per_sample / 8);
+            printf("memcpy\n");
         }
 
         if (fp_far)
